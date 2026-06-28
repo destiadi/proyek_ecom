@@ -54,20 +54,7 @@ def eksekusi_pickup_gspread(id_karung_scan):
     except Exception as e:
         st.error(f"❌ Gagal memperbarui data: {e}")
 
-# Komponen Scanner URL Parameter - Versi Super Aman (Kebal Semua Versi Streamlit)
-query_parameters = {}
-try:
-    # Coba gunakan cara modern dulu
-    query_parameters = st.query_parameters
-    if "scan" in query_parameters:
-        id_scan = query_parameters["scan"]
-        eksekusi_pickup_gspread(id_scan)
-    else:
-        id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
-        if id_dari_scanner:
-            eksekusi_pickup_gspread(id_dari_scanner)
-except AttributeError:
-    # Komponen Scanner URL Parameter - Auto Input Aktif
+# Komponen Scanner URL Parameter - Auto Input Aktif
 try:
     query_parameters = st.query_parameters
     if "scan" in query_parameters:
