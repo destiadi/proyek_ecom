@@ -55,20 +55,24 @@ def eksekusi_pickup_gspread(id_karung_scan):
         st.error(f"❌ Gagal memperbarui data: {e}")
 
 # Komponen Scanner URL Parameter - Auto Input Aktif
+# Komponen Scanner URL Parameter - Auto Input & Auto Submit Aktif
 try:
     query_parameters = st.query_parameters
     if "scan" in query_parameters:
         id_scan = query_parameters["scan"]
-        # Jika parameter berbentuk list (pada beberapa versi), ambil indeks pertama
         if isinstance(id_scan, list):
             id_scan = id_scan[0]
         eksekusi_pickup_gspread(id_scan)
     else:
-        id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
-        if id_dari_scanner:
-            eksekusi_pickup_gspread(id_dari_scanner)
+        # Menggunakan parameter on_change agar langsung mengeksekusi fungsi begitu scanner mengisi teks
+        id_dari_scanner = st.text_input(
+            "👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", 
+            key="scanner_input",
+            on_change=lambda: eksekusi_pickup_gspread(st.session_state.scanner_input) if st.session_state.scanner_input else None
+        )
 except Exception as e:
-    # Cadangan aman jika server sedang transisi update
-    id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
-    if id_dari_scanner:
-        eksekusi_pickup_gspread(id_dari_scanner)
+    id_dari_scanner = st.text_input(
+        "👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", 
+        key="scanner_input",
+        on_change=lambda: eksekusi_pickup_gspread(st.session_state.scanner_input) if st.session_state.scanner_input else None
+    )
