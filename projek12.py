@@ -9,23 +9,24 @@ st.write("---")
 
   # 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
 try:
-    credentials = st.secrets["gspread_creds"]
-    # Login ke Google Sheets menggunakan gspread
-    gc = gspread.service_account_from_dict(credentials)
-    
-    # Buka spreadsheet berdasarkan URL-nya
-    URL_SHEET = st.secrets["connections"]["gsheets"]["spreadsheet"]
-    sh = gc.open_by_url(URL_SHEET)
-    worksheet = sh.get_worksheet(0) # Membuka sheet pertama
-    
-    # Konversi data Google Sheets menjadi Pandas DataFrame untuk ditampilkan
-    data = worksheet.get_all_records()
-    df = pd.DataFrame(data)
-except Exception as e:
-    # --- BAGIAN INI UNTUK MENYEMBUNYIKAN EROR MENTAH ---
-    # Kita tidak lagi memanggil variabel {e} ke layar browser
-    st.error("❌ Gagal terhubung ke Google Sheets: Batas kuota permintaan (Rate Limit) terlampaui atau server sedang sibuk. Silakan tunggu 1-2 menit lalu refresh kembali halaman ini.")
-    st.stop()
+        # 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
+        credentials = st.secrets["gspread_creds"]
+        # Login ke Google Sheets menggunakan gspread
+        gc = gspread.service_account_from_dict(credentials)
+        
+        # Buka spreadsheet berdasarkan URL-nya
+        URL_SHEET = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        sh = gc.open_by_url(URL_SHEET)
+        worksheet = sh.get_worksheet(0) # Membuka sheet pertama
+        
+        # Konversi data Google Sheets menjadi Pandas DataFrame untuk ditampilkan
+        data = worksheet.get_all_records()
+        df = pd.DataFrame(data)
+    except Exception as e:
+        st.error("❌ Gagal terhubung ke Google Sheets: Batas kuota permintaan (Rate Limit) terlampaui atau server sedang sibuk. Silakan tunggu 1-2 menit lalu refresh kembali halaman ini.")
+        st.stop()
+   
+
 
 # Tampilkan data saat ini di layar web
 st.write("🔍 **Data Terdeteksi di Google Sheets:**")
