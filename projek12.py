@@ -3,8 +3,8 @@ import gspread
 import pandas as pd
 from datetime import datetime, timedelta
 
-st.title("📦 Sistem Verifikasi Master Barcode (Gspread)")
-st.subheader("Manajemen Pick-Up Paket Gudang")
+st.title("📦 Warehouse Depo 2Tang Jakarta")
+st.subheader("Pemantauan Pick Up Ekspedisi")
 st.write("---")
 
 # 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
