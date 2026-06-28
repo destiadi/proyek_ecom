@@ -54,25 +54,28 @@ def eksekusi_pickup_gspread(id_karung_scan):
     except Exception as e:
         st.error(f"❌ Gagal memperbarui data: {e}")
 
-# Komponen Scanner URL Parameter - Auto Input Aktif
-# Komponen Scanner URL Parameter - Auto Input & Auto Submit Aktif
 try:
-    query_parameters = st.query_parameters
-    if "scan" in query_parameters:
-        id_scan = query_parameters["scan"]
-        if isinstance(id_scan, list):
-            id_scan = id_scan[0]
-        eksekusi_pickup_gspread(id_scan)
+    # Mengambil parameter '?scan=...' dari link barcode yang di-scan
+    params = st.query_parameters
+    
+    if "scan" in params:
+        # Ambil nilai ID dari link barcode
+        id_dari_link = params["scan"]
+        
+        # Jalankan eksekusi input otomatis ke Google Sheets
+        eksekusi_pickup_gspread(id_dari_link)
+        
+        # Tampilkan info di layar bahwa input dari link berhasil
+        st.info(f"⚡ Mencoba memproses barcode otomatis dari link: {id_dari_link}")
+        
     else:
-        # Menggunakan parameter on_change agar langsung mengeksekusi fungsi begitu scanner mengisi teks
-        id_dari_scanner = st.text_input(
-            "👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", 
-            key="scanner_input",
-            on_change=lambda: eksekusi_pickup_gspread(st.session_state.scanner_input) if st.session_state.scanner_input else None
-        )
+        # Jika web dibuka biasa (tanpa link barcode), tampilkan kotak input manual
+        id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
+        if id_dari_scanner:
+            eksekusi_pickup_gspread(id_dari_scanner)
+
 except Exception as e:
-    id_dari_scanner = st.text_input(
-        "👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", 
-        key="scanner_input",
-        on_change=lambda: eksekusi_pickup_gspread(st.session_state.scanner_input) if st.session_state.scanner_input else None
-    )
+    # Cadangan aman jika terjadi kegagalan sistem pembacaan URL
+    id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
+    if id_dari_scanner:
+        eksekusi_pickup_gspread(id_dari_scanner)
