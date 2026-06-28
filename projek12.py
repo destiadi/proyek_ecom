@@ -8,7 +8,6 @@ st.title("📦 Sistem Verifikasi Master Barcode (Gspread)")
 st.subheader("Manajemen Pick-Up Paket Gudang")
 st.write("---")
 
-# 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
 try:
     credentials = st.secrets["gspread_creds"]
     # Login ke Google Sheets menggunakan gspread
