@@ -16,7 +16,7 @@ try:
     
     # Buka spreadsheet berdasarkan URL-nya
     URL_SHEET = st.secrets["connections"]["gsheets"]["spreadsheet"]
-    sh = gc.open_by_url(URL_SHEET)
+    sh = gc.open_by_url(https://docs.google.com/spreadsheets/d/1jjdCeQ7JP3eDSfWzPLRFyo6SYY9dUk8ScHkd9joQnl4/edit?gid=0#gid=0)
     worksheet = sh.get_worksheet(0) # Membuka sheet pertama
     
     # Konversi data Google Sheets menjadi Pandas DataFrame untuk ditampilkan
