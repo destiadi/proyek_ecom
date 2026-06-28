@@ -67,18 +67,21 @@ try:
         if id_dari_scanner:
             eksekusi_pickup_gspread(id_dari_scanner)
 except AttributeError:
-    try:
-        # Jika gagal, otomatis beralih ke cara lama
-        query_parameters = st.experimental_get_query_params()
-        if "scan" in query_parameters:
-            id_scan = query_parameters["scan"][0]
-            eksekusi_pickup_gspread(id_scan)
-        else:
-            id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
-            if id_dari_scanner:
-                eksekusi_pickup_gspread(id_dari_scanner)
-    except Exception as e:
-        # Jika kedua cara di atas tidak didukung, langsung bypass ke input manual tanpa merusak web
+    # Komponen Scanner URL Parameter - Auto Input Aktif
+try:
+    query_parameters = st.query_parameters
+    if "scan" in query_parameters:
+        id_scan = query_parameters["scan"]
+        # Jika parameter berbentuk list (pada beberapa versi), ambil indeks pertama
+        if isinstance(id_scan, list):
+            id_scan = id_scan[0]
+        eksekusi_pickup_gspread(id_scan)
+    else:
         id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
         if id_dari_scanner:
             eksekusi_pickup_gspread(id_dari_scanner)
+except Exception as e:
+    # Cadangan aman jika server sedang transisi update
+    id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
+    if id_dari_scanner:
+        eksekusi_pickup_gspread(id_dari_scanner)
