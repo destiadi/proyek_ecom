@@ -7,8 +7,6 @@ st.title("📦 Warehouse Depo 2Tang Jakarta")
 st.subheader("Pemantauan Pick Up Ekspedisi")
 st.write("---")
 
-# 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
-try:
   # 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
 try:
     credentials = st.secrets["gspread_creds"]
