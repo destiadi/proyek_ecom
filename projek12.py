@@ -54,28 +54,37 @@ def eksekusi_pickup_gspread(id_karung_scan):
     except Exception as e:
         st.error(f"❌ Gagal memperbarui data: {e}")
 
+# Komponen Utama: Deteksi Link Barcode dengan Sistem Kunci Memori (Session State)
 try:
-    # Mengambil parameter '?scan=...' dari link barcode yang di-scan
+    # 1. Tangkap parameter dari link barcode (?scan=...)
     params = st.query_parameters
     
-    if "scan" in params:
-        # Ambil nilai ID dari link barcode
+    # 2. Jika ada parameter "scan" di link dan belum pernah diproses di sesi ini
+    if "scan" in params and "barcode_terproses" not in st.session_state:
         id_dari_link = params["scan"]
         
-        # Jalankan eksekusi input otomatis ke Google Sheets
+        # Jalankan fungsi input otomatis ke Google Sheets
         eksekusi_pickup_gspread(id_dari_link)
         
-        # Tampilkan info di layar bahwa input dari link berhasil
-        st.info(f"⚡ Mencoba memproses barcode otomatis dari link: {id_dari_link}")
+        # Kunci di memori agar tidak menduplikasi input saat halaman me-refresh sendiri
+        st.session_state["barcode_terproses"] = id_dari_link
+        st.success(f"✅ Barcode {id_dari_link} dari link berhasil di-input otomatis!")
         
+    # 3. Tampilan Halaman Utama Web
+    if "barcode_terproses" in st.session_state:
+        st.info(f"Karung yang terakhir diproses otomatis: **{st.session_state['barcode_terproses']}**")
+        # Tombol reset jika ingin melakukan scan link baru tanpa menutup browser
+        if st.button("🔄 Siap untuk Scan Selanjutnya"):
+            del st.session_state["barcode_terproses"]
+            st.rerun()
     else:
-        # Jika web dibuka biasa (tanpa link barcode), tampilkan kotak input manual
+        # Jika web dibuka biasa (bukan dari link barcode), tampilkan kotak input manual seperti biasa
         id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
         if id_dari_scanner:
             eksekusi_pickup_gspread(id_dari_scanner)
 
 except Exception as e:
-    # Cadangan aman jika terjadi kegagalan sistem pembacaan URL
+    # Antisipasi aman jika sistem pembacaan URL mengalami kendala internal
     id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
     if id_dari_scanner:
         eksekusi_pickup_gspread(id_dari_scanner)
