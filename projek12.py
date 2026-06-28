@@ -56,9 +56,12 @@ def eksekusi_pickup_gspread(id_karung_scan):
         st.error(f"❌ Gagal memperbarui data: {e}")
 
 # Komponen Scanner URL Parameter
-query_parameters = st.query_parameters
+# Komponen Scanner URL Parameter (Menggunakan fungsi versi lama agar kompatibel)
+query_parameters = st.experimental_get_query_params()
 if "scan" in query_parameters:
-    eksekusi_pickup_gspread(query_parameters["scan"])
+    # Karena versi lama mengembalikan list, kita ambil indeks pertama [0]
+    id_scan = query_parameters["scan"][0]
+    eksekusi_pickup_gspread(id_scan)
 else:
     id_dari_scanner = st.text_input("👉 SILAKAN SCAN BARCODE KARUNG DI SINI:", key="scanner_input")
     if id_dari_scanner:
