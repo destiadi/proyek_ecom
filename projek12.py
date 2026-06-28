@@ -1,13 +1,13 @@
 import streamlit as st
 import gspread
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
-st.title("📦 Warehouse Depo 2Tang Jakarta")
-st.subheader("Pemantauan Pick Up Ekspedisi")
+st.title("📦 Sistem Verifikasi Master Barcode (Gspread)")
+st.subheader("Manajemen Pick-Up Paket Gudang")
 st.write("---")
 
-  # 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
 # 1. Konfigurasi Kredensial Langsung via Secrets Streamlit
 try:
     credentials = st.secrets["gspread_creds"]
@@ -16,7 +16,7 @@ try:
     
     # Buka spreadsheet berdasarkan URL-nya
     URL_SHEET = st.secrets["connections"]["gsheets"]["spreadsheet"]
-    sh = gc.open_by_url(https://docs.google.com/spreadsheets/d/1jjdCeQ7JP3eDSfWzPLRFyo6SYY9dUk8ScHkd9joQnl4/edit?gid=0#gid=0)
+    sh = gc.open_by_url(URL_SHEET)
     worksheet = sh.get_worksheet(0) # Membuka sheet pertama
     
     # Konversi data Google Sheets menjadi Pandas DataFrame untuk ditampilkan
@@ -40,7 +40,8 @@ def eksekusi_pickup_gspread(id_karung_scan):
             st.warning(f"⚠️ Barcode '{id_karung_scan}' tidak ditemukan di database!")
             return
             
-        waktu_sekarang = (datetime.now() + timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S")
+        zona_wib = ZoneInfo("Asia/Jakarta")
+        waktu_sekarang = datetime.now(zona_wib).strftime("%Y-%m-%d %H:%M:%S")
         
         # Lakukan update massal langsung ke baris Google Sheets asli secara real-time
         for cell in cell_list:
@@ -55,7 +56,7 @@ def eksekusi_pickup_gspread(id_karung_scan):
         st.error(f"❌ Gagal memperbarui data: {e}")
 
 # Komponen Scanner URL Parameter
-query_parameters = st.query_params
+query_parameters = st.query_parameters
 if "scan" in query_parameters:
     eksekusi_pickup_gspread(query_parameters["scan"])
 else:
